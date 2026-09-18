@@ -1,0 +1,25 @@
+CREATE TABLE "CmsHomepage" (
+  "id" TEXT NOT NULL,
+  "announcement" TEXT NOT NULL DEFAULT '',
+  "heroEyebrow" TEXT NOT NULL DEFAULT '',
+  "heroTitle" TEXT NOT NULL,
+  "heroExcerpt" TEXT NOT NULL DEFAULT '',
+  "heroCtaLabel" TEXT NOT NULL DEFAULT '',
+  "heroCtaHref" TEXT NOT NULL DEFAULT '/shop',
+  "heroImageUrl" TEXT NOT NULL DEFAULT '',
+  "collectionEyebrow" TEXT NOT NULL DEFAULT '',
+  "collectionTitle" TEXT NOT NULL DEFAULT '',
+  "collectionLinkLabel" TEXT NOT NULL DEFAULT 'View all',
+  "storyEyebrow" TEXT NOT NULL DEFAULT '',
+  "storyTitle" TEXT NOT NULL DEFAULT '',
+  "storyExcerpt" TEXT NOT NULL DEFAULT '',
+  "storyCtaLabel" TEXT NOT NULL DEFAULT '',
+  "storyCtaHref" TEXT NOT NULL DEFAULT '/about',
+  "newsletterEyebrow" TEXT NOT NULL DEFAULT '',
+  "newsletterTitle" TEXT NOT NULL DEFAULT '',
+  "newsletterText" TEXT NOT NULL DEFAULT '',
+  "newsletterButtonLabel" TEXT NOT NULL DEFAULT 'Subscribe',
+  "updatedAt" TIMESTAMP(3) NOT NULL,
+  CONSTRAINT "CmsHomepage_pkey" PRIMARY KEY ("id")
+);
+INSERT INTO "CmsHomepage" ("id","announcement","heroEyebrow","heroTitle","heroExcerpt","heroCtaLabel","heroCtaHref","heroImageUrl","collectionEyebrow","collectionTitle","collectionLinkLabel","storyEyebrow","storyTitle","storyExcerpt","storyCtaLabel","storyCtaHref","newsletterEyebrow","newsletterTitle","newsletterText","newsletterButtonLabel","updatedAt") VALUES ('home','Complimentary shipping on orders over ₹5,000','The ATELIER collection','Objects with a quiet point of view.','Considered essentials for everyday living. Designed with restraint, made to last, and selected for the spaces and rituals that matter.','Explore the collection','/shop','','Live from the catalog','Shop by collection','View all','Our philosophy','Less, but better.','We believe the things you live with should earn their place. Our collection is deliberately edited: tactile materials, enduring forms, and useful objects with a little soul.','Read our story','/about','Stay in the know','A considered note, occasionally.','New collections, journal stories and private offers. No noise.','Subscribe',CURRENT_TIMESTAMP);

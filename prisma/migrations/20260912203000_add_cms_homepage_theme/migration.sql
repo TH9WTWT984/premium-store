@@ -1,0 +1,1 @@
+ALTER TABLE "CmsHomepage" ADD COLUMN IF NOT EXISTS "themeConfig" TEXT NOT NULL DEFAULT '{}';
