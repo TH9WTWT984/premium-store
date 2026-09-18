@@ -88,3 +88,7 @@ shop-drawer.tsx
 *.backup*
 *.bak
 *.tmp
+
+*backup*
+
+*backup*
