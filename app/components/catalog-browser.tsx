@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { isVisibleStorefrontCategory } from "@/lib/storefront-categories";
 import styles from "./catalog-browser.module.css";
 import WishlistButton from "./wishlist-button";
 
@@ -110,6 +111,7 @@ export default function CatalogBrowser({
   basePath?: string;
 }) {
   const [mobileFilters, setMobileFilters] = useState(false);
+  const visibleCategories = categories.filter((category) => isVisibleStorefrontCategory(category.slug));
 
   const activeLabel = useMemo(() => {
     if (current.category) {
@@ -152,7 +154,7 @@ export default function CatalogBrowser({
           All
         </Link>
 
-        {categories.map((category) => (
+        {visibleCategories.map((category) => (
           <Link
             href={
               basePath === "/shop"

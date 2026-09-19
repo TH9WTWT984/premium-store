@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isVisibleStorefrontCategory } from "@/lib/storefront-categories";
 import ProductImage from "./product-image";
 import styles from "./collection-grid.module.css";
 
@@ -22,11 +23,13 @@ export function getCollection(slug: string) {
 }
 
 export function CollectionGrid({ categories }: { categories: StoreCategory[] }) {
+  const visibleCategories = categories.filter((category) => isVisibleStorefrontCategory(category.slug));
+
   return (
     <div className={styles.wrap}>
       <div className={styles.rule} />
       <div className={styles.grid}>
-        {categories.map((category, index) => {
+        {visibleCategories.map((category, index) => {
           return (
             <Link key={category.id} href={`/collections/${category.slug}`} className={styles.card}>
               <div className={styles.media}>
