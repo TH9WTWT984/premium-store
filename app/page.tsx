@@ -6,6 +6,7 @@ import StoreHeader from "./components/store-header";
 import AnnouncementSlider from "./components/announcement-slider";
 import { CollectionGrid } from "./components/collection-grid";
 import StoreFooter from "./components/store-footer";
+import TShirtShowcase from "./components/t-shirt-showcase";
 
 const defaults = {
   announcement: "",
@@ -40,16 +41,11 @@ export default async function Home() {
     getActiveCategories(),
     getHomepage(),
   ]);
-  const heroStyle = content.heroImageUrl ? { backgroundImage: `url("${content.heroImageUrl.replace(/"/g, "\\\"")}")` } : undefined;
-
   return <>
     {content.announcement && <AnnouncementSlider announcement={content.announcement} />}
     <StoreHeader />
     <main>
-      <section className="hero">
-        <div className="hero-copy"><div><div className="eyebrow">{content.heroEyebrow}</div><h1 className="serif">{content.heroTitle}</h1><p>{content.heroExcerpt}</p><div className="hero-actions"><Link className="btn btn-dark" href={content.heroCtaHref || "/shop"}>{content.heroCtaLabel || "Explore the collection"}</Link><Link className="text-link" href="/shop">Browse all pieces <span>↗</span></Link></div></div></div>
-        <div className="hero-art" style={heroStyle} aria-label="Store collection"><div className="hero-art-note">ATELIER / 2026<br /><strong>Everyday, considered.</strong></div></div>
-      </section>
+      <TShirtShowcase />
 
       <section className="section container" id="collections">
         <div className="section-head"><div><div className="eyebrow">{content.collectionEyebrow}</div><h2 className="serif">{content.collectionTitle}</h2></div><Link className="link" href="/shop">{content.collectionLinkLabel}</Link></div>
