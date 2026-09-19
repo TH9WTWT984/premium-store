@@ -257,7 +257,7 @@ export default function ShopDrawer({
     setSelectedSubcategory(null);
   }, [open, tab]);
 
-  const shopCards = shopAllData[tab];
+  const shopCards = shopAllData[tab].filter((card) => card.slug !== "new-arrivals");
   const selectedCategoryData = selectedCategory
     ? categoryBySlug.get(selectedCategory) ?? null
     : null;
@@ -453,7 +453,6 @@ export default function ShopDrawer({
           </section>
 
           <div className={styles.quickLinks}>
-            <button type="button" onClick={stayOnPage}>New Arrivals</button>
             <button type="button" onClick={stayOnPage}>Bestsellers</button>
             <button type="button" onClick={stayOnPage}>Sale</button>
             <button type="button" onClick={stayOnPage}>Request a Quote</button>

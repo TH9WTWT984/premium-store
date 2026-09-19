@@ -104,9 +104,6 @@ export default function StoreHeader() {
             <Icon name="collection" />
             <span>Collections</span>
           </Link>
-          <Link className={styles.navLink} href="/shop?sort=newest">
-            <span>New arrivals</span>
-          </Link>
         </nav>
 
         <Link href="/" className={styles.logo} aria-label="ATELIER home">
