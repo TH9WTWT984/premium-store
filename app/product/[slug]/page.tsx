@@ -155,6 +155,23 @@ export default async function ProductPage({
     notFound();
   }
 
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      status: "ACTIVE",
+      categoryId: product.categoryId,
+      id: { not: product.id },
+    },
+    orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+    take: 4,
+    include: {
+      category: { select: { name: true } },
+      images: {
+        orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
+        take: 1,
+      },
+    },
+  });
+
   const jsonLd = productStructuredData(product);
 
   // Prisma Decimal values must be converted before
@@ -186,7 +203,18 @@ export default async function ProductPage({
         />
       ) : null}
 
-      <ProductPageClient product={clientProduct} />
+      <ProductPageClient
+        product={clientProduct}
+        relatedProducts={relatedProducts.map((item) => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug,
+          price: Number(item.price),
+          category: item.category.name,
+          image: item.images[0]?.url || null,
+          alt: item.images[0]?.alt || item.name,
+        }))}
+      />
     </>
   );
 }

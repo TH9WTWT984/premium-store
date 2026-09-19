@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import styles from "./catalog-browser.module.css";
+import WishlistButton from "./wishlist-button";
 
 type Product = {
   id: string;
@@ -323,11 +324,8 @@ export default function CatalogBrowser({
 
       <div className={styles.grid}>
         {products.map((product, index) => (
-          <Link
-            href={`/product/${product.slug}`}
-            className={styles.product}
-            key={product.id}
-          >
+          <div className={styles.productWrap} key={product.id}>
+          <Link href={`/product/${product.slug}`} className={styles.product}>
             <div className={styles.image}>
               {product.image ? (
                 <img src={product.image} alt={product.alt} />
@@ -373,6 +371,8 @@ export default function CatalogBrowser({
               </div>
             </div>
           </Link>
+          <WishlistButton productId={product.id} initialWishlisted={false} compact />
+          </div>
         ))}
 
         {!products.length && (

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function WishlistButton({ productId, initialWishlisted }: { productId: string; initialWishlisted: boolean }) {
+export default function WishlistButton({ productId, initialWishlisted, compact = false }: { productId: string; initialWishlisted: boolean; compact?: boolean }) {
   const router = useRouter();
   const [active, setActive] = useState(initialWishlisted);
   const [busy, setBusy] = useState(false);
@@ -37,8 +37,8 @@ export default function WishlistButton({ productId, initialWishlisted }: { produ
 
   return (
     <div className="wishlist-action">
-      <button type="button" className={`wishlist-button ${active ? "is-active" : ""}`} onClick={toggle} disabled={busy}>
-        {active ? "♥ Saved" : "♡ Save to wishlist"}
+      <button type="button" aria-label={active ? "Remove from wishlist" : "Save to wishlist"} className={`wishlist-button ${compact ? "wishlist-compact" : ""} ${active ? "is-active" : ""}`} onClick={toggle} disabled={busy}>
+        {active ? "♥" : "♡"}{!compact && (active ? " Saved" : " Save to wishlist")}
       </button>
       {message && <span className="cart-action-message">{message}</span>}
     </div>

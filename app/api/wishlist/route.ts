@@ -67,6 +67,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       saved: !existing,
+      wishlisted: !existing,
     });
   } catch {
     return NextResponse.json(
@@ -74,4 +75,18 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+}
+
+export async function DELETE(request: Request) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+
+  const productId = new URL(request.url).searchParams.get("productId")?.trim();
+  if (!productId) return NextResponse.json({ error: "Product is required." }, { status: 400 });
+
+  const wishlist = await prisma.wishlist.findUnique({ where: { userId: user.id } });
+  if (wishlist) {
+    await prisma.wishlistItem.deleteMany({ where: { wishlistId: wishlist.id, productId } });
+  }
+  return NextResponse.json({ ok: true, saved: false, wishlisted: false });
 }

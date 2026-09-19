@@ -45,6 +45,8 @@
   text-transform: uppercase;
 }
 
+.primaryNav .navLink:last-child { color: #a34835; }
+
 .navLink svg { width: 16px; height: 16px; }
 
 .navLink:hover,

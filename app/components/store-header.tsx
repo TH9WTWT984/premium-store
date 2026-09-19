@@ -104,6 +104,9 @@ export default function StoreHeader() {
             <Icon name="collection" />
             <span>Collections</span>
           </Link>
+          <Link className={styles.navLink} href="/shop?sort=newest">
+            <span>New arrivals</span>
+          </Link>
         </nav>
 
         <Link href="/" className={styles.logo} aria-label="ATELIER home">
@@ -129,12 +132,12 @@ export default function StoreHeader() {
             </button>
           </form>
 
-          <Link className={styles.iconAction} href="/account" aria-label="Account" title="Account">
-            <Icon name="account" />
-          </Link>
-
           <Link className={styles.iconAction} href="/wishlist" aria-label="Wishlist" title="Wishlist">
             <Icon name="heart" />
+          </Link>
+
+          <Link className={styles.iconAction} href="/account" aria-label="Account" title="Account">
+            <Icon name="account" />
           </Link>
 
           <Link className={styles.iconAction} href="/cart" aria-label="Bag" title="Bag">

@@ -33,6 +33,16 @@ type Product = {
   variants: ProductVariant[];
 };
 
+type RelatedProduct = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  category: string;
+  image: string | null;
+  alt: string;
+};
+
 const SIZE_GUIDE = [
   ["S", "36-38 in", "27-28 in"],
   ["M", "38-40 in", "28-29 in"],
@@ -92,8 +102,10 @@ function Icon({
 
 export default function ProductPageClient({
   product,
+  relatedProducts = [],
 }: {
   product: Product;
+  relatedProducts?: RelatedProduct[];
 }) {
   const router = useRouter();
 
@@ -742,6 +754,23 @@ export default function ProductPageClient({
           </div>
         </aside>
       </section>
+
+      {relatedProducts.length > 0 && (
+        <section className={styles.related} aria-labelledby="related-products-title">
+          <div className={styles.relatedHead}>
+            <div><span className={styles.relatedKicker}>Keep exploring</span><h2 id="related-products-title">You may also like</h2></div>
+            <Link href={`/category/${product.category.slug}`}>View the collection ↗</Link>
+          </div>
+          <div className={styles.relatedGrid}>
+            {relatedProducts.map((item) => (
+              <Link href={`/product/${item.slug}`} className={styles.relatedCard} key={item.id}>
+                <div className={styles.relatedImage}><ProductImage src={item.image} alt={item.alt} /></div>
+                <div className={styles.relatedMeta}><div><span>{item.category}</span><strong>{item.name}</strong></div><b>Rs. {money(item.price)}</b></div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }
