@@ -74,6 +74,7 @@ function Icon({
 
 export default function StoreHeader() {
   const [shopOpen, setShopOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   return (
     <header className={styles.header}>
@@ -110,6 +111,16 @@ export default function StoreHeader() {
         </Link>
 
         <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.mobileSearchToggle}
+            onClick={() => setMobileSearchOpen((value) => !value)}
+            aria-label={mobileSearchOpen ? "Close search" : "Open search"}
+            aria-expanded={mobileSearchOpen}
+          >
+            <Icon name="search" />
+          </button>
+
           <form className={styles.search} action="/search" method="get" role="search">
             <Icon name="search" />
             <input name="q" type="search" placeholder="Search the collection" aria-label="Search the collection" />
@@ -131,6 +142,22 @@ export default function StoreHeader() {
           </Link>
         </div>
       </div>
+
+      {mobileSearchOpen && (
+        <form className={styles.mobileSearchForm} action="/search" method="get" role="search">
+          <Icon name="search" />
+          <input
+            name="q"
+            type="search"
+            placeholder="Search the collection"
+            aria-label="Search the collection"
+            autoFocus
+          />
+          <button type="submit" className={styles.mobileSearchSubmit} aria-label="Submit search">
+            Search
+          </button>
+        </form>
+      )}
 
       <ShopDrawer open={shopOpen} onClose={() => setShopOpen(false)} />
     </header>
