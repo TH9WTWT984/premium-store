@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import StoreHeader from "../components/store-header";
 import PublicProductCard from "../components/public-product-card";
+import StoreFooter from "../components/store-footer";
 
 export default async function WishlistPage() {
   const user = await getCurrentUser();
@@ -52,6 +53,7 @@ export default async function WishlistPage() {
           </div>
         )}
       </main>
+      <StoreFooter />
     </>
   );
 }

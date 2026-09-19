@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import ProductImage from "@/app/components/product-image";
+import WishlistButton from "@/app/components/wishlist-button";
 import styles from "./style-product-detail.module.css";
 
 type ImageItem = { src: string; alt: string };
@@ -17,6 +19,7 @@ type Product = {
   images: ImageItem[];
   variants: Variant[];
 };
+type RelatedProduct = { id: string; name: string; slug: string; price: number; image: string | null; alt: string };
 
 const SIZE_GUIDE = [
   ["S", "36–38 in", "27–28 in"],
@@ -36,12 +39,14 @@ export default function StyleProductDetail({
   style,
   product,
   previewImages = [],
+  relatedProducts = [],
 }: {
   categoryName: string;
   categorySlug: string;
   style: string;
   product: Product | null;
   previewImages?: ImageItem[];
+  relatedProducts?: RelatedProduct[];
 }) {
   const router = useRouter();
   const [active, setActive] = useState(0);
@@ -127,14 +132,14 @@ export default function StyleProductDetail({
                   onClick={() => setActive(index)}
                   aria-label={`View image ${index + 1}`}
                 >
-                  <img src={image.src} alt={image.alt} />
+                  <ProductImage src={image.src} alt={image.alt} />
                 </button>
               ))}
             </div>
 
             <div className={styles.mainImageWrap}>
               {gallery[active] ? (
-                <img className={styles.mainImage} src={gallery[active].src} alt={gallery[active].alt} />
+                <ProductImage className={styles.mainImage} src={gallery[active].src} alt={gallery[active].alt} />
               ) : (
                 <div className={styles.imageEmpty}>Product imagery coming soon</div>
               )}
@@ -230,6 +235,8 @@ export default function StyleProductDetail({
             </button>
           </div>
 
+          {product && <WishlistButton productId={product.id} initialWishlisted={false} />}
+
           {message && <p className={styles.message} role="status">{message}</p>}
 
           <section className={styles.paymentBox}>
@@ -259,24 +266,43 @@ export default function StyleProductDetail({
         </aside>
       </section>
 
+      {gallery.length > 0 && (
+        <section className={styles.lookSection} aria-labelledby="style-look-title">
+          <div className={styles.lookHead}>
+            <div><span className={styles.eyebrow}>Explore the style</span><h2 id="style-look-title">Shop by variant / look</h2></div>
+            <span>{String(gallery.length).padStart(2, "0")} views</span>
+          </div>
+          <div className={styles.lookRail}>
+            {gallery.map((image, index) => (
+              <button type="button" key={`${image.src}-${index}`} className={`${styles.lookThumb} ${index === active ? styles.lookThumbActive : ""}`} onClick={() => setActive(index)} aria-label={`View look ${index + 1}`}>
+                <ProductImage src={image.src} alt={image.alt} />
+                <span>{String(index + 1).padStart(2, "0")}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {relatedProducts.length > 0 && (
+        <section className={styles.relatedSection} aria-labelledby="style-related-title">
+          <div className={styles.lookHead}><div><span className={styles.eyebrow}>Continue browsing</span><h2 id="style-related-title">You may also like</h2></div><Link href={`/category/${categorySlug}`}>View collection ↗</Link></div>
+          <div className={styles.relatedGrid}>
+            {relatedProducts.map((item) => (
+              <Link href={`/product/${item.slug}`} className={styles.relatedCard} key={item.id}>
+                <div className={styles.relatedImage}><ProductImage src={item.image} alt={item.alt} /></div>
+                <div className={styles.relatedMeta}><strong>{item.name}</strong><span>₹{item.price.toLocaleString("en-IN")}</span></div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className={styles.promiseBand}>
         <div><span>01</span><strong>Easy fit</strong><p>Use the size guide before selecting your size.</p></div>
         <div><span>02</span><strong>Secure payment</strong><p>Payment is verified server-side before the order is confirmed.</p></div>
         <div><span>03</span><strong>Clear returns</strong><p>The published store return policy remains the source of truth.</p></div>
       </section>
 
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerBrand}>
-            <div className={styles.footerLogo}>ATELIER</div>
-            <p>Modern essentials, thoughtfully selected. Designed around quality, restraint and everyday beauty.</p>
-          </div>
-          <div><h4>SHOP</h4><Link href="/shop">All products</Link><Link href={`/collections/${categorySlug}`}>Collections</Link><Link href="/search">Search</Link></div>
-          <div><h4>HELP</h4><Link href="/contact">Contact</Link><Link href="/faq">FAQ</Link><Link href="/shipping">Shipping</Link><Link href="/returns">Returns</Link></div>
-          <div><h4>COMPANY</h4><Link href="/about">Our story</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
-        </div>
-        <div className={styles.copyright}><span>© 2026 ATELIER</span><span>Made for everyday living.</span></div>
-      </footer>
     </main>
   );
 }

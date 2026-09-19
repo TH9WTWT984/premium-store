@@ -1,0 +1,264 @@
+.footerWrap {
+  width: 100%;
+  margin-top: 60px;
+  background: #fbfaf8;
+  border-top: 1px solid rgba(23, 23, 20, 0.08);
+  font-family: inherit;
+}
+
+/* 1. Full-width brand accent banner */
+.brandAccentBanner {
+  width: 100%;
+  background: #d8232a;
+  color: #ffffff;
+  padding: 18px 24px;
+  text-align: center;
+}
+
+.brandAccentText {
+  font-size: clamp(16px, 2.4vw, 26px);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* 2. Customer trust statement */
+.customerTrustSection {
+  text-align: center;
+  padding: 42px 24px 32px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(23, 23, 20, 0.06);
+}
+
+.customerTrustHeading {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 3.2vw, 38px);
+  font-weight: 400;
+  color: #1a1918;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+
+.customerTrustHeading strong {
+  font-weight: 800;
+  color: #111111;
+}
+
+.customerTrustSubtext {
+  font-size: 14px;
+  color: #66625b;
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* 3. Main Footer */
+.mainFooter {
+  background: #f4f2ed;
+  padding: 50px 0 28px;
+}
+
+.footerContainer {
+  width: min(100%, 1400px);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px;
+  margin-bottom: 40px;
+}
+
+.colTitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #d8232a;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+}
+
+.colList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.colList a {
+  color: #44403c;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.colList a:hover {
+  color: #111111;
+  text-decoration: underline;
+}
+
+.viewAllLink {
+  color: #d8232a !important;
+  font-weight: 700 !important;
+}
+
+/* Badges */
+.badgeList {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.featureBadge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #33302c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.featureBadge svg {
+  color: #666;
+  flex-shrink: 0;
+}
+
+/* Social strip */
+.socialStrip {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(23, 23, 20, 0.08);
+  border-bottom: 1px solid rgba(23, 23, 20, 0.08);
+  margin-bottom: 24px;
+}
+
+.followLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #33302c;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.socialIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(23, 23, 20, 0.12);
+  display: grid;
+  place-items: center;
+  color: #333;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.socialIcon:hover {
+  transform: translateY(-2px);
+  background: #111;
+  color: #fff;
+}
+
+/* Payment strip */
+.paymentStrip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(23, 23, 20, 0.08);
+  margin-bottom: 24px;
+}
+
+.paymentCol {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stripLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #77726b;
+  text-transform: uppercase;
+}
+
+.paymentBadges,
+.shippingBadges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.payBadge,
+.shippingBadges span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #33302c;
+  background: #ffffff;
+  padding: 4px 9px;
+  border-radius: 4px;
+  border: 1px solid rgba(23, 23, 20, 0.1);
+}
+
+/* Bottom copyright */
+.bottomBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #888279;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .footerGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footerGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .footerContainer {
+    padding: 0 20px;
+  }
+
+  .paymentStrip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .socialStrip {
+    justify-content: center;
+  }
+}

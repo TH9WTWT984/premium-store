@@ -43,7 +43,7 @@ async function fetchPublicCategoryPage(slug: string) {
         include: {
           images: {
             orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
-            take: 1,
+            take: 2,
           },
           variants: {
             where: { isActive: true },

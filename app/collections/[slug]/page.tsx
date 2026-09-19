@@ -4,6 +4,7 @@ import StoreHeader from "../../components/store-header";
 import { getCollection, storefrontCollections } from "../../components/collection-grid";
 import { getPublicCategoryPage as getCategory } from "@/lib/storefront-cache";
 import styles from "./page.module.css";
+import StoreFooter from "../../components/store-footer";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       <>
         <StoreHeader />
         <main className={styles.notFound}><div className="eyebrow">ATELIER COLLECTIONS</div><h1>Collection not found.</h1><Link href="/#collections">Back to collections</Link></main>
+        <StoreFooter />
       </>
     );
   }
@@ -135,6 +137,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
           </div>
         </section>
       </main>
+      <StoreFooter />
     </>
   );
 }

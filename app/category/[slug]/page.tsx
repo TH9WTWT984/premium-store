@@ -1,35 +1,29 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import StoreHeader from "@/app/components/store-header";
-import StyleProductDetail from "@/app/components/style-product-detail";
-import { getPublicCategoryPage as getCategory, getPublicProductPage as getProduct } from "@/lib/storefront-cache";
+import StoreFooter from "@/app/components/store-footer";
+import MobileNav from "@/app/components/mobile-nav";
+import ProductImage from "@/app/components/product-image";
+import WishlistButton from "@/app/components/wishlist-button";
+import styles from "./category-page.module.css";
 
-const STYLE_IMAGES: Record<string, string> = {
-  plain: "/images/tshirts/01-plain.jpg",
-  printed: "/images/tshirts/02-printed.jpg",
-  embroidered: "/images/tshirts/03-embroidered.jpg",
-  "off-shoulder": "/images/tshirts/04-off-shoulder.jpg",
-  compression: "/images/tshirts/05-compression.jpg",
-  knitted: "/images/tshirts/06-knitted.jpg",
-  polo: "/images/tshirts/07-polo.jpg",
-  "boxy-fit-full-sleeves": "/images/tshirts/08-boxy-fit-full-sleeves.jpg",
-};
+export const dynamic = "force-dynamic";
 
-const STYLE_LABELS: Record<string, string> = {
-  plain: "Plain",
-  printed: "Printed",
-  embroidered: "Embroidered",
-  "off-shoulder": "Off-shoulder",
-  compression: "Compression",
-  knitted: "Knitted",
-  polo: "Polo",
-  "boxy-fit-full-sleeves": "Boxy-fit Full Sleeves",
-};
-
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
-  const category = await getCategory(slug);
-  if (!category) return { title: "Collection not found", robots: { index: false, follow: false } };
+  const category = await prisma.category.findUnique({
+    where: { slug },
+  });
+
+  if (!category) {
+    return { title: "Collection not found", robots: { index: false, follow: false } };
+  }
 
   return {
     title: `${category.name} — ATELIER`,
@@ -38,68 +32,143 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function CategoryStylePage({
+export default async function CategoryPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ style?: string; design?: string }>;
 }) {
-  const [{ slug }, query] = await Promise.all([params, searchParams]);
-  const category = await getCategory(slug);
+  const { slug } = await params;
+
+  const category = await prisma.category.findUnique({
+    where: { slug },
+    include: {
+      products: {
+        where: { status: "ACTIVE" },
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+        include: {
+          category: { select: { name: true } },
+          images: {
+            orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
+            take: 2,
+          },
+          variants: {
+            where: { isActive: true },
+            select: { stock: true },
+          },
+        },
+      },
+    },
+  });
+
   if (!category) notFound();
-
-  const requestedStyle = (query.style || query.design || "").trim().toLowerCase();
-  const styleLabel =
-    STYLE_LABELS[requestedStyle] ||
-    (requestedStyle ? requestedStyle.replace(/[-_]+/g, " ") : "Collection");
-
-  // A style card is a visual entry point. When the catalog already has a
-  // matching active product, use it. Otherwise use the first active product
-  // so the style URL still opens the normal product-detail experience.
-  const normalizedStyle = requestedStyle.replace(/[-_]+/g, " ");
-  const matchingProduct = requestedStyle
-    ? category.products.find((product) => {
-        const haystack = `${product.name} ${product.shortDescription || ""} ${product.description}`.toLowerCase();
-        return haystack.includes(normalizedStyle) || haystack.includes(requestedStyle);
-      })
-    : null;
-
-  const product = matchingProduct || category.products[0] || null;
-  const fullProduct = product ? await getProduct(product.slug) : null;
-  const previewImage = STYLE_IMAGES[requestedStyle] || STYLE_IMAGES.plain;
-
-  const productForDetail = fullProduct
-    ? {
-        id: fullProduct.id,
-        name: fullProduct.name,
-        description: fullProduct.description,
-        shortDescription: fullProduct.shortDescription,
-        price: Number(fullProduct.price),
-        compareAtPrice: fullProduct.compareAtPrice == null ? null : Number(fullProduct.compareAtPrice),
-        images: fullProduct.images.map((image) => ({
-          src: image.url,
-          alt: image.alt || fullProduct.name,
-        })),
-        variants: fullProduct.variants.map((variant) => ({
-          id: variant.id,
-          name: variant.name,
-          price: variant.price == null ? null : Number(variant.price),
-          stock: variant.stock,
-        })),
-      }
-    : null;
 
   return (
     <>
       <StoreHeader />
-      <StyleProductDetail
-        categoryName={category.name}
-        categorySlug={category.slug}
-        style={styleLabel}
-        product={productForDetail}
-        previewImages={[{ src: previewImage, alt: `${styleLabel} ${category.name}` }]}
-      />
+
+      <main className={styles.categoryShell}>
+        {/* Split Editorial Hero Header (Screenshot 4 Style) */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroCopy}>
+            <Link href="/#collections" className={styles.backLink}>
+              ← Collections
+            </Link>
+            <div className={styles.eyebrow}>EVERYDAY FORMS</div>
+            <h1 className={styles.title}>{category.name}</h1>
+            <p className={styles.description}>
+              {category.description || "Considered essentials arranged for easy discovery."}
+            </p>
+            <div className={styles.countBadge}>
+              <strong>{category.products.length}</strong> {category.products.length === 1 ? "PIECE" : "PIECES"} IN VIEW
+            </div>
+          </div>
+
+          <div className={styles.heroImageWrap}>
+            <ProductImage
+              src={category.imageUrl}
+              alt={category.name}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+              className={styles.heroImg}
+            />
+          </div>
+        </section>
+
+        {/* Product Catalog Grid */}
+        <section className={styles.catalogSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>All {category.name}</h2>
+            <Link href="/shop" className={styles.browseAllLink}>
+              Browse Full Catalog →
+            </Link>
+          </div>
+
+          {category.products.length > 0 ? (
+            <div className={styles.productGrid}>
+              {category.products.map((product) => {
+                const primary = product.images[0]?.url || category.imageUrl;
+                const secondary = product.images[1]?.url || primary;
+                const inStock = product.variants.some((v) => v.stock > 0);
+
+                return (
+                  <article key={product.id} className={styles.productCard}>
+                    <div className={styles.cardMediaWrap}>
+                      <Link href={`/product/${product.slug}`} className={styles.cardLink}>
+                        <ProductImage
+                          src={primary}
+                          alt={product.images[0]?.alt || product.name}
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          className={styles.primaryImg}
+                        />
+                        {secondary && (
+                          <ProductImage
+                            src={secondary}
+                            alt={`${product.name} alternate`}
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className={styles.secondaryImg}
+                          />
+                        )}
+                      </Link>
+
+                      {product.featured && <span className={styles.featuredBadge}>Featured</span>}
+                      {!inStock && <span className={styles.soldOutBadge}>Sold Out</span>}
+
+                      <div className={styles.wishlistWrap}>
+                        <WishlistButton productId={product.id} initialWishlisted={false} compact />
+                      </div>
+                    </div>
+
+                    <Link href={`/product/${product.slug}`} className={styles.cardInfoLink}>
+                      <div className={styles.cardTitle}>{product.name}</div>
+                      <div className={styles.cardCategory}>{product.category.name}</div>
+                      <div className={styles.priceRow}>
+                        <span className={styles.price}>
+                          ₹{Number(product.price).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+                        </span>
+                        {product.compareAtPrice && Number(product.compareAtPrice) > Number(product.price) && (
+                          <del className={styles.delPrice}>
+                            ₹{Number(product.compareAtPrice).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+                          </del>
+                        )}
+                      </div>
+                    </Link>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <p>No products currently available in this collection.</p>
+              <Link href="/shop" className={styles.emptyCta}>
+                Explore Other Collections
+              </Link>
+            </div>
+          )}
+        </section>
+      </main>
+
+      <StoreFooter />
+      <MobileNav />
     </>
   );
 }

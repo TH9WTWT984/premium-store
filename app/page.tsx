@@ -5,6 +5,7 @@ import PublicProductCard from "./components/public-product-card";
 import StoreHeader from "./components/store-header";
 import AnnouncementSlider from "./components/announcement-slider";
 import { CollectionGrid } from "./components/collection-grid";
+import StoreFooter from "./components/store-footer";
 
 const defaults = {
   announcement: "",
@@ -59,6 +60,6 @@ export default async function Home() {
       <section className="story"><div className="story-art" /><div className="story-copy"><div><div className="eyebrow">{content.storyEyebrow}</div><h2 className="serif">{content.storyTitle}</h2><p>{content.storyExcerpt}</p><Link href={content.storyCtaHref || "/about"} className="btn btn-light">{content.storyCtaLabel || "Read our story"}</Link></div></div></section>
       <section className="newsletter"><div className="eyebrow">{content.newsletterEyebrow}</div><h2 className="serif">{content.newsletterTitle}</h2><p>{content.newsletterText}</p><form><input type="email" placeholder="Your email address" aria-label="Email address" /><button className="btn btn-dark" type="submit">{content.newsletterButtonLabel || "Subscribe"}</button></form></section>
     </main>
-    <footer className="footer"><div className="container"><div className="footer-grid"><div><div className="logo">ATELIER</div><p>Modern essentials, thoughtfully selected. An independent store built around quality, restraint and everyday beauty.</p></div><div><h4>Shop</h4><div className="footer-links"><Link href="/shop">All products</Link><Link href="/search">Search</Link></div></div><div><h4>Help</h4><div className="footer-links"><Link href="/contact">Contact</Link><Link href="/faq">FAQ</Link><Link href="/shipping">Shipping</Link><Link href="/returns">Returns</Link></div></div><div><h4>Company</h4><div className="footer-links"><Link href="/about">Our story</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div></div></div><div className="copyright"><span>© 2026 ATELIER</span><span>Made for everyday living.</span></div></div></footer>
+    <StoreFooter />
   </>;
 }

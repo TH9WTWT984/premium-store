@@ -5,6 +5,7 @@ import { getCartSummary } from "@/lib/cart";
 import StoreHeader from "../components/store-header";
 import CartClient from "../components/cart-client";
 import Phase6Styles from "../components/phase6-styles";
+import StoreFooter from "../components/store-footer";
 
 export default async function CartPage() {
   const user = await getCurrentUser();
@@ -65,6 +66,7 @@ export default async function CartPage() {
           />
         )}
       </main>
+      <StoreFooter />
     </>
   );
 }

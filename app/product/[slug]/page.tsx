@@ -1,6 +1,9 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import StoreHeader from "@/app/components/store-header";
+import StoreFooter from "@/app/components/store-footer";
+import MobileNav from "@/app/components/mobile-nav";
 import ProductPageClient from "@/app/components/product-page-client";
 
 const siteUrl =
@@ -44,7 +47,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = product.seoTitle?.trim() || product.name;
+  const title = product.seoTitle?.trim() || `${product.name} — ATELIER`;
 
   const description =
     product.seoDescription?.trim() ||
@@ -155,16 +158,19 @@ export default async function ProductPage({
     notFound();
   }
 
-  const relatedProducts = await prisma.product.findMany({
+  // 1. Fetch Sibling Variant Looks (products in same category or matching series)
+  const prefix = product.slug.split("-")[0];
+  const siblingProducts = await prisma.product.findMany({
     where: {
       status: "ACTIVE",
-      categoryId: product.categoryId,
-      id: { not: product.id },
+      OR: [
+        { categoryId: product.categoryId },
+        { slug: { startsWith: prefix } },
+      ],
     },
     orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-    take: 4,
+    take: 6,
     include: {
-      category: { select: { name: true } },
       images: {
         orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
         take: 1,
@@ -172,10 +178,55 @@ export default async function ProductPage({
     },
   });
 
+  const variantLooks = siblingProducts.map((p) => ({
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    image: p.images[0]?.url || "",
+    active: p.id === product.id,
+  }));
+
+  // 2. Fetch Related Products ("Others Also Bought")
+  let relatedProducts = await prisma.product.findMany({
+    where: {
+      status: "ACTIVE",
+      id: { not: product.id },
+      categoryId: product.categoryId,
+    },
+    orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+    take: 4,
+    include: {
+      category: { select: { name: true } },
+      images: {
+        orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
+        take: 2,
+      },
+    },
+  });
+
+  // If fewer than 4 in same category, supplement with other active products
+  if (relatedProducts.length < 4) {
+    const existingIds = [product.id, ...relatedProducts.map((p) => p.id)];
+    const additional = await prisma.product.findMany({
+      where: {
+        status: "ACTIVE",
+        id: { notIn: existingIds },
+      },
+      orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+      take: 4 - relatedProducts.length,
+      include: {
+        category: { select: { name: true } },
+        images: {
+          orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
+          take: 2,
+        },
+      },
+    });
+    relatedProducts = [...relatedProducts, ...additional];
+  }
+
   const jsonLd = productStructuredData(product);
 
-  // Prisma Decimal values must be converted before
-  // passing the product to the client component.
   const clientProduct = {
     ...product,
     price: Number(product.price),
@@ -203,18 +254,27 @@ export default async function ProductPage({
         />
       ) : null}
 
+      <StoreHeader />
+
       <ProductPageClient
+        key={product.id} // Ensures clean state reset when navigating between products
         product={clientProduct}
+        variantLooks={variantLooks}
         relatedProducts={relatedProducts.map((item) => ({
           id: item.id,
           name: item.name,
           slug: item.slug,
           price: Number(item.price),
+          compareAtPrice: item.compareAtPrice ? Number(item.compareAtPrice) : null,
           category: item.category.name,
-          image: item.images[0]?.url || null,
+          primaryImage: item.images[0]?.url || null,
+          secondaryImage: item.images[1]?.url || item.images[0]?.url || null,
           alt: item.images[0]?.alt || item.name,
         }))}
       />
+
+      <StoreFooter />
+      <MobileNav />
     </>
   );
 }

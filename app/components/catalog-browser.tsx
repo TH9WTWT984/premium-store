@@ -16,6 +16,7 @@ type Product = {
   category: string;
   categorySlug: string;
   image: string | null;
+  secondaryImage: string | null;
   alt: string;
   inStock: boolean;
 };
@@ -330,7 +331,10 @@ export default function CatalogBrowser({
           <Link href={`/product/${product.slug}`} className={styles.product}>
             <div className={styles.image}>
               {product.image ? (
-                <img src={product.image} alt={product.alt} />
+                <>
+                  <img src={product.image} alt={product.alt} />
+                  {product.secondaryImage && <img className={styles.secondaryImage} src={product.secondaryImage} alt={`${product.alt} alternate view`} />}
+                </>
               ) : (
                 <div className={styles.placeholder}>ATELIER</div>
               )}

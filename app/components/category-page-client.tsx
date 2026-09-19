@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import ProductImage from "@/app/components/product-image";
+import WishlistButton from "@/app/components/wishlist-button";
 
 export default function CategoryPageClient({ category }: { category: any }) {
   return (
@@ -18,12 +19,13 @@ export default function CategoryPageClient({ category }: { category: any }) {
           const inStock = product.variants?.some((variant: any) => variant.stock > 0);
           return (
             <Link key={product.id} href={`/product/${product.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
-              <div style={{ aspectRatio: "4 / 5", background: "#ebe5dd", overflow: "hidden" }}>
+              <div style={{ aspectRatio: "4 / 5", background: "#ebe5dd", overflow: "hidden", position: "relative" }}>
                 {image?.url ? (
                   <ProductImage src={image.url} alt={image.alt || product.name} />
                 ) : (
-                  <div style={{ height: "100%", display: "grid", placeItems: "center", fontFamily: "Georgia,serif", letterSpacing: ".15em", color: "#958a7f" }}>ATELIER</div>
+                  <ProductImage alt={product.name} />
                 )}
+                <WishlistButton productId={product.id} initialWishlisted={false} compact />
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12, paddingTop: 10 }}>
                 <div>

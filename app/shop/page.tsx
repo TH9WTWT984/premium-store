@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import StoreHeader from "@/app/components/store-header";
 import CatalogBrowser from "@/app/components/catalog-browser";
 import styles from "@/app/components/catalog-browser.module.css";
+import StoreFooter from "@/app/components/store-footer";
 
 export const dynamic = "force-dynamic";
 
@@ -138,7 +139,7 @@ export default async function ShopPage({
       category: true,
       images: {
         orderBy: [{ isPrimary: "desc" }, { sortOrder: "asc" }],
-        take: 1,
+        take: 2,
       },
       variants: {
         where: { isActive: true },
@@ -204,6 +205,7 @@ export default async function ShopPage({
               product.images[0]?.url ||
               product.category.imageUrl ||
               null,
+            secondaryImage: product.images[1]?.url || null,
             alt: product.images[0]?.alt || product.name,
             inStock: product.variants.some((variant) => variant.stock > 0),
           }))}
@@ -226,6 +228,7 @@ export default async function ShopPage({
           }}
         />
       </main>
+      <StoreFooter />
     </>
   );
 }

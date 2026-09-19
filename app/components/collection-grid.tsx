@@ -18,6 +18,10 @@ export const storefrontCollections: EditorialCollection[] = [
   { slug: "outerwear", name: "Outerwear", kicker: "For changing days", image: "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=1400&q=85", subs: ["jackets", "overshirts", "lightweight", "statement"] },
 ];
 
+const categoryFallbackImages: Record<string, string> = Object.fromEntries(
+  storefrontCollections.map((collection) => [collection.slug, collection.image]),
+);
+
 export function getCollection(slug: string) {
   return storefrontCollections.find((item) => item.slug === slug);
 }
@@ -33,7 +37,11 @@ export function CollectionGrid({ categories }: { categories: StoreCategory[] }) 
           return (
             <Link key={category.id} href={`/collections/${category.slug}`} className={styles.card}>
               <div className={styles.media}>
-                <ProductImage src={category.imageUrl} alt={category.name} />
+                <ProductImage
+                  src={category.imageUrl}
+                  fallbackSrc={categoryFallbackImages[category.slug]}
+                  alt={category.name}
+                />
                 <div className={styles.scrim} />
                 <span className={styles.index}>{String(index + 1).padStart(2, "0")}</span>
                 <span className={styles.arrow} aria-hidden="true">↗</span>
