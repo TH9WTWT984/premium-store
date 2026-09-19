@@ -7,6 +7,14 @@ function isRemoteImage(src: string) {
   return /^https?:\/\//i.test(src);
 }
 
+function canUseNextImageOptimization(src: string) {
+  try {
+    return new URL(src).hostname === "images.unsplash.com";
+  } catch {
+    return false;
+  }
+}
+
 export default function ProductImage({
   src,
   alt,
@@ -33,7 +41,7 @@ export default function ProductImage({
       height={1000}
       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
       loading="lazy"
-      unoptimized={isRemoteImage(src)}
+      unoptimized={isRemoteImage(src) && !canUseNextImageOptimization(src)}
       onError={() => setFailed(true)}
     />
   );
